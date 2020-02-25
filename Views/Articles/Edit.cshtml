@@ -1,0 +1,29 @@
+@model netCoreWorkshop.Entities.Article
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+<form action="/Articles/Edit" method="post">
+    <div class="form-horizontal">
+        <h4>Article</h4>
+        <hr />
+        <h2>@Model.Title</h2>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="number" name="Id" readonly="" class="form-control-plaintext p-0" value="@Model.Id">
+                <input type="text" name="Title" value="@Model.Title" />
+                @Html.ValidationMessage("TitleError")
+                <input type="submit" value="Edit" class="btn btn-primary" />
+                <a class="btn btn-danger" href="/Articles/Index">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<div>
+    <a href="/Articles/Index">Back to List</a>
+</div>
