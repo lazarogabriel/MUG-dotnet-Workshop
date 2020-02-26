@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using netCoreWorkShop.Services.ArticleService;
 using netCoreWorkShop.Services.ArticleService.Abstractions;
+using netCoreWorkShop.Data;
 
 namespace netCoreWorkshop
 {
@@ -20,6 +22,8 @@ namespace netCoreWorkshop
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ArticlesContext>(options => options.UseSqlite(Configuration.GetConnectionString("Articles")));
+
             services.AddControllersWithViews();
 
             services.AddTransient<IArticleService, ArticleService>();

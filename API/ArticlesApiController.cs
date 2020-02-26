@@ -62,9 +62,16 @@ namespace netCoreWorkshop.API
             return Ok();
         }
 
-        [HttpPut]
-        public IActionResult Edit([FromBody]Article article)
+        [HttpPut("{id}")]
+        public IActionResult Edit(int id, [FromBody]Article article)
         {
+
+            if (article.Id != id)
+            {
+                return BadRequest();
+
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();
