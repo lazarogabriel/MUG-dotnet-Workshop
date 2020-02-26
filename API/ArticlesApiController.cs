@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using netCoreWorkshop.Entities;
+using netCoreWorkShop.Services.ArticleService.Abstractions;
 using System.Linq;
 
 namespace netCoreWorkshop.API
@@ -8,15 +9,21 @@ namespace netCoreWorkshop.API
     [ApiController]
     public class ArticlesApiController : ControllerBase
     {
+        private readonly IArticleService _articleService;
+        public ArticlesApiController(IArticleService articleServices)
+        {
+            _articleService = articleServices;
+        }
+
         [HttpGet]
-        public IActionResult GetAll() => Ok(Article.DataSource.ToList());
+        public IActionResult GetAll() => Ok(_articleService.GetArticles());
 
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
 
-            var article = Article.DataSource.Where(a => a.Id == id).FirstOrDefault();
+            var article = _articleService.GetArticle(id);
 
             if (article == null)
             {
@@ -35,9 +42,7 @@ namespace netCoreWorkshop.API
                 return BadRequest(ModelState);
             }
 
-            var newArticle = new Article { Title = article.Title, Id = Article.DataSource.Count() + 1 };
-
-            Article.DataSource.Add(newArticle);
+            var newArticle = _articleService.AddArticle(article);
 
             return CreatedAtAction(nameof(Create), new { newArticle.Id }, newArticle);
         }
@@ -45,14 +50,14 @@ namespace netCoreWorkshop.API
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var article = Article.DataSource.Where(a => a.Id == id).FirstOrDefault();
+            var article = _articleService.GetArticle(id);
 
             if(article == null)
             {
                 return NotFound();
             }
 
-            Article.DataSource.Remove(article);
+            _articleService.DeleteArticle(id);
 
             return Ok();
         }
@@ -65,14 +70,12 @@ namespace netCoreWorkshop.API
                 return BadRequest();
             }
 
-            var articleInList = Article.DataSource.Where(a => a.Id == article.Id).FirstOrDefault();
+            var articleInList = _articleService.EditArticle(article);
 
             if (articleInList == null)
             {
                 return NotFound();
             }
-
-            articleInList.Title = article.Title;
 
             return Ok();
         }
